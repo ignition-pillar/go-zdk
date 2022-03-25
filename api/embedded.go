@@ -8,20 +8,20 @@ import (
 type EmbeddedApi struct {
 	client client.IClient
 
-	//Accelerator embedded.AcceleratorApi
-	Pillar   embedded.PillarApi
-	Plasma   embedded.PlasmaApi
-	Sentinel embedded.SentinelApi
-	Spork    embedded.SporkApi
-	Stake    embedded.StakeApi
-	Swap     embedded.SwapApi
-	Token    embedded.TokenApi
+	Accelerator embedded.AcceleratorApi
+	Pillar      embedded.PillarApi
+	Plasma      embedded.PlasmaApi
+	Sentinel    embedded.SentinelApi
+	Spork       embedded.SporkApi
+	Stake       embedded.StakeApi
+	Swap        embedded.SwapApi
+	Token       embedded.TokenApi
 }
 
 func (e *EmbeddedApi) SetClient(client client.IClient) {
 	e.client = client
 
-	//e.Accelerator.SetClient(client)
+	e.Accelerator.SetClient(client)
 	e.Pillar.SetClient(client)
 	e.Plasma.SetClient(client)
 	e.Sentinel.SetClient(client)
@@ -33,14 +33,14 @@ func (e *EmbeddedApi) SetClient(client client.IClient) {
 
 func NewEmbeddedApi() EmbeddedApi {
 	e := EmbeddedApi{
-		//Accelerator: embedded.AcceleratorApi{},
-		Pillar:   embedded.PillarApi{},
-		Plasma:   embedded.PlasmaApi{},
-		Sentinel: embedded.SentinelApi{},
-		Spork:    embedded.SporkApi{},
-		Stake:    embedded.StakeApi{},
-		Swap:     embedded.SwapApi{},
-		Token:    embedded.TokenApi{},
+		Accelerator: embedded.AcceleratorApi{},
+		Pillar:      embedded.PillarApi{},
+		Plasma:      embedded.PlasmaApi{},
+		Sentinel:    embedded.SentinelApi{},
+		Spork:       embedded.SporkApi{},
+		Stake:       embedded.StakeApi{},
+		Swap:        embedded.SwapApi{},
+		Token:       embedded.TokenApi{},
 	}
 	return e
 }
