@@ -9,14 +9,14 @@ import (
 )
 
 type SubscribeApi struct {
-	client client.IClient
+	client client.Client
 }
 
-func (s *SubscribeApi) SetClient(client client.IClient) {
-	s.client = client
+func NewSubscribeApi(client client.Client) SubscribeApi {
+	return SubscribeApi{client}
 }
 
-func (s *SubscribeApi) ToMomentums(ch chan []subscribe.Momentum) (client.ISubscription, error) {
+func (s SubscribeApi) ToMomentums(ch chan []subscribe.Momentum) (client.Subscription, error) {
 	ctx := context.Background()
 	sub, err := s.client.Subscribe(ctx, "ledger", ch, "momentums")
 	if err != nil {
@@ -25,7 +25,7 @@ func (s *SubscribeApi) ToMomentums(ch chan []subscribe.Momentum) (client.ISubscr
 	return sub, nil
 }
 
-func (s *SubscribeApi) ToAllAccountBlocks(ch chan []subscribe.AccountBlock) (client.ISubscription, error) {
+func (s SubscribeApi) ToAllAccountBlocks(ch chan []subscribe.AccountBlock) (client.Subscription, error) {
 	ctx := context.Background()
 	sub, err := s.client.Subscribe(ctx, "ledger", ch, "allAccountBlocks")
 	if err != nil {
@@ -34,7 +34,7 @@ func (s *SubscribeApi) ToAllAccountBlocks(ch chan []subscribe.AccountBlock) (cli
 	return sub, nil
 }
 
-func (s *SubscribeApi) ToAccountBlocksByAddress(ch chan []subscribe.AccountBlock, address types.Address) (client.ISubscription, error) {
+func (s SubscribeApi) ToAccountBlocksByAddress(ch chan []subscribe.AccountBlock, address types.Address) (client.Subscription, error) {
 	ctx := context.Background()
 	sub, err := s.client.Subscribe(ctx, "ledger", ch, "accountBlocksByAddress", address.String())
 	if err != nil {
@@ -43,7 +43,7 @@ func (s *SubscribeApi) ToAccountBlocksByAddress(ch chan []subscribe.AccountBlock
 	return sub, nil
 }
 
-func (s *SubscribeApi) ToUnreceivedAccountBlocksByAddress(ch chan []subscribe.AccountBlock, address types.Address) (client.ISubscription, error) {
+func (s SubscribeApi) ToUnreceivedAccountBlocksByAddress(ch chan []subscribe.AccountBlock, address types.Address) (client.Subscription, error) {
 	ctx := context.Background()
 	sub, err := s.client.Subscribe(ctx, "ledger", ch, "unreceivedAccountBlocksByAddress", address.String())
 	if err != nil {

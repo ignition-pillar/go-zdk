@@ -12,15 +12,17 @@ make examples
 
 ## Features
 
-- Supports all JSON-RPC methods (except `ledger.publishRawTransaction`)
+- Supports all JSON-RPC methods including Subscriptions
+- Supports all embedded Contract methods
 
 ## Todo
 
-- [ ] ledger.publishRawTransaction, AccountBlockTemplate, contract methods, wallet integration, decimal support
-- [ ] Embedded.Accelerator Api (upon release of znnd v0.0.3)
-- [ ] (?) Repackage types from go-zenon for convenient imports
 - [ ] Event and filter system for better Subscriptions Api
-- [ ] Evaluate pointers for non-struct return types e.g `[]PillarInfo` vs `[]*PillarInfo`
+- [ ] ZtsAmount (decimal) support for financial calculations
 - [ ] Documentation & Versioning Scheme
 - [ ] Testing framework
+- [ ] Support PoWCallback
+- [ ] Evaluate pointers for non-struct return types e.g `[]PillarInfo` vs `[]*PillarInfo`
+- [ ] (?) Add logging
+- [ ] (?) Repackage types from go-zenon for convenient imports
 - [ ] (?) Provide additional IClient implementations e.g using in-memory or distributed caches

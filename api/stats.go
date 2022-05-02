@@ -7,14 +7,14 @@ import (
 )
 
 type StatsApi struct {
-	client client.IClient
+	client client.Client
 }
 
-func (s *StatsApi) SetClient(client client.IClient) {
-	s.client = client
+func NewStatsApi(client client.Client) StatsApi {
+	return StatsApi{client}
 }
 
-func (s *StatsApi) OsInfo() (*api.OsInfoResponse, error) {
+func (s StatsApi) OsInfo() (*api.OsInfoResponse, error) {
 	var result api.OsInfoResponse
 	err := s.client.Call(&result, "stats.osInfo")
 	if err != nil {
@@ -23,7 +23,7 @@ func (s *StatsApi) OsInfo() (*api.OsInfoResponse, error) {
 	return &result, nil
 }
 
-func (s *StatsApi) ProcessInfo() (*api.ProcessInfoResponse, error) {
+func (s StatsApi) ProcessInfo() (*api.ProcessInfoResponse, error) {
 	var result api.ProcessInfoResponse
 	err := s.client.Call(&result, "stats.processInfo")
 	if err != nil {
@@ -32,7 +32,7 @@ func (s *StatsApi) ProcessInfo() (*api.ProcessInfoResponse, error) {
 	return &result, nil
 }
 
-func (s *StatsApi) NetworkInfo() (*api.NetworkInfoResponse, error) {
+func (s StatsApi) NetworkInfo() (*api.NetworkInfoResponse, error) {
 	var result api.NetworkInfoResponse
 	err := s.client.Call(&result, "stats.networkInfo")
 	if err != nil {
@@ -41,7 +41,7 @@ func (s *StatsApi) NetworkInfo() (*api.NetworkInfoResponse, error) {
 	return &result, nil
 }
 
-func (s *StatsApi) SyncInfo() (*protocol.SyncInfo, error) {
+func (s StatsApi) SyncInfo() (*protocol.SyncInfo, error) {
 	var result protocol.SyncInfo
 	err := s.client.Call(&result, "stats.syncInfo")
 	if err != nil {

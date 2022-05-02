@@ -2,10 +2,9 @@ module github.com/zenon-wiki/go-zdk
 
 go 1.17
 
-require github.com/zenon-network/go-zenon v0.0.3-alphanet
+require github.com/zenon-network/go-zenon v0.0.4-alphanet
 
 require (
-	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/btcsuite/btcd v0.22.0-beta // indirect
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce // indirect
 	github.com/deckarep/golang-set v1.8.0 // indirect

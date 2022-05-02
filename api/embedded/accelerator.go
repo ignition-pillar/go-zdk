@@ -1,22 +1,28 @@
 package embedded
 
 import (
+	"math/big"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
+	"github.com/zenon-network/go-zenon/vm/constants"
 	"github.com/zenon-network/go-zenon/vm/embedded/definition"
 	"github.com/zenon-wiki/go-zdk/client"
+	"github.com/zenon-wiki/go-zdk/utils/template"
 )
 
 type AcceleratorApi struct {
-	client client.IClient
+	client client.Client
 }
 
-func (a *AcceleratorApi) SetClient(client client.IClient) {
-	a.client = client
+func NewAcceleratorApi(client client.Client) AcceleratorApi {
+	return AcceleratorApi{client}
 }
 
-func (a *AcceleratorApi) GetAll(pageIndex, pageSize uint32) (*embedded.ProjectList, error) {
+// RPC
+func (a AcceleratorApi) GetAll(pageIndex, pageSize uint32) (*embedded.ProjectList, error) {
 	if pageSize > api.RpcMaxPageSize {
 		pageSize = api.RpcMaxPageSize
 	}
@@ -28,7 +34,7 @@ func (a *AcceleratorApi) GetAll(pageIndex, pageSize uint32) (*embedded.ProjectLi
 	return &result, nil
 }
 
-func (a *AcceleratorApi) GetProjectById(id types.Hash) (*embedded.Project, error) {
+func (a AcceleratorApi) GetProjectById(id types.Hash) (*embedded.Project, error) {
 	var result embedded.Project
 	err := a.client.Call(&result, "embedded.accelerator.getProjectById", id.String())
 	if err != nil {
@@ -37,7 +43,7 @@ func (a *AcceleratorApi) GetProjectById(id types.Hash) (*embedded.Project, error
 	return &result, nil
 }
 
-func (a *AcceleratorApi) GetPhaseById(id types.Hash) (*embedded.Phase, error) {
+func (a AcceleratorApi) GetPhaseById(id types.Hash) (*embedded.Phase, error) {
 	var result embedded.Phase
 	err := a.client.Call(&result, "embedded.accelerator.getPhaseById", id.String())
 	if err != nil {
@@ -46,7 +52,13 @@ func (a *AcceleratorApi) GetPhaseById(id types.Hash) (*embedded.Phase, error) {
 	return &result, nil
 }
 
-func (a *AcceleratorApi) GetVoteBreakdown(id types.Hash) (*definition.VoteBreakdown, error) {
+func (a AcceleratorApi) GetPillarVotes(name string, hashes []types.Hash) ([]definition.PillarVote, error) {
+	var result []definition.PillarVote
+	err := a.client.Call(&result, "embedded.accelerator.getPillarVotes", name, hashes)
+	return result, err
+}
+
+func (a AcceleratorApi) GetVoteBreakdown(id types.Hash) (*definition.VoteBreakdown, error) {
 	var result definition.VoteBreakdown
 	err := a.client.Call(&result, "embedded.accelerator.getVoteBreakdown", id.String())
 	if err != nil {
@@ -55,8 +67,125 @@ func (a *AcceleratorApi) GetVoteBreakdown(id types.Hash) (*definition.VoteBreakd
 	return &result, nil
 }
 
-func (a *AcceleratorApi) GetPillarVotes(name string, hashes []types.Hash) ([]definition.PillarVote, error) {
-	var result []definition.PillarVote
-	err := a.client.Call(&result, "embedded.accelerator.getPillarVotes", name, hashes)
-	return result, err
+// ContractMethods
+func (a AcceleratorApi) CreateProject(name string, description string, url string, znnNeeded *big.Int, qsrNeeded *big.Int) (*nom.AccountBlock, error) {
+	data, err := definition.ABIAccelerator.PackMethod(
+		definition.CreateProjectMethodName,
+		name,
+		description,
+		url,
+		znnNeeded,
+		qsrNeeded,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		a.client.ProtocolVersion(),
+		a.client.ChainIdentifier(),
+		types.AcceleratorContract,
+		types.ZnnTokenStandard,
+		constants.ProjectCreationAmount,
+		data,
+	), nil
+}
+
+func (a AcceleratorApi) AddPhase(id types.Hash, name string, description string, url string, znnNeeded *big.Int, qsrNeeded *big.Int) (*nom.AccountBlock, error) {
+	data, err := definition.ABIAccelerator.PackMethod(
+		definition.AddPhaseMethodName,
+		id,
+		name,
+		description,
+		url,
+		znnNeeded,
+		qsrNeeded,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		a.client.ProtocolVersion(),
+		a.client.ChainIdentifier(),
+		types.AcceleratorContract,
+		types.ZnnTokenStandard,
+		big.NewInt(0),
+		data,
+	), nil
+}
+
+func (a AcceleratorApi) UpdatePhase(id types.Hash, name string, description string, url string, znnNeeded *big.Int, qsrNeeded *big.Int) (*nom.AccountBlock, error) {
+	data, err := definition.ABIAccelerator.PackMethod(
+		definition.UpdatePhaseMethodName,
+		id,
+		name,
+		description,
+		url,
+		znnNeeded,
+		qsrNeeded,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		a.client.ProtocolVersion(),
+		a.client.ChainIdentifier(),
+		types.AcceleratorContract,
+		types.ZnnTokenStandard,
+		big.NewInt(0),
+		data,
+	), nil
+}
+
+func (a AcceleratorApi) Donate(amount *big.Int, zts types.ZenonTokenStandard) (*nom.AccountBlock, error) {
+	data, err := definition.ABIAccelerator.PackMethod(definition.DonateMethodName)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		a.client.ProtocolVersion(),
+		a.client.ChainIdentifier(),
+		types.AcceleratorContract,
+		zts,
+		amount,
+		data,
+	), nil
+}
+
+func (a AcceleratorApi) VoteByName(id types.Hash, pillarName string, vote uint8) (*nom.AccountBlock, error) {
+	data, err := definition.ABIAccelerator.PackMethod(
+		definition.VoteByNameMethodName,
+		id,
+		pillarName,
+		vote,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		a.client.ProtocolVersion(),
+		a.client.ChainIdentifier(),
+		types.AcceleratorContract,
+		types.ZnnTokenStandard,
+		big.NewInt(0),
+		data,
+	), nil
+}
+
+func (a AcceleratorApi) VoteByProdAddress(id types.Hash, vote uint8) (*nom.AccountBlock, error) {
+	data, err := definition.ABIAccelerator.PackMethod(
+		definition.VoteByProdAddressMethodName,
+		id,
+		vote,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		a.client.ProtocolVersion(),
+		a.client.ChainIdentifier(),
+		types.AcceleratorContract,
+		types.ZnnTokenStandard,
+		big.NewInt(0),
+		data,
+	), nil
 }

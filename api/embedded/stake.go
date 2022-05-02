@@ -1,23 +1,27 @@
 package embedded
 
 import (
+	"math/big"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
 	"github.com/zenon-network/go-zenon/vm/embedded/definition"
 	"github.com/zenon-wiki/go-zdk/client"
+	"github.com/zenon-wiki/go-zdk/utils/template"
 )
 
 type StakeApi struct {
-	client client.IClient
+	client client.Client
 }
 
-func (s *StakeApi) SetClient(client client.IClient) {
-	s.client = client
+func NewStakeApi(client client.Client) StakeApi {
+	return StakeApi{client}
 }
 
 // RPC
-func (s *StakeApi) GetEntriesByAddress(address types.Address, pageIndex, pageSize uint32) (*embedded.StakeList, error) {
+func (s StakeApi) GetEntriesByAddress(address types.Address, pageIndex, pageSize uint32) (*embedded.StakeList, error) {
 	if pageSize > api.RpcMaxPageSize {
 		pageSize = api.RpcMaxPageSize
 	}
@@ -30,7 +34,7 @@ func (s *StakeApi) GetEntriesByAddress(address types.Address, pageIndex, pageSiz
 }
 
 // Common RPC
-func (s *StakeApi) GetUncollectedReward(address types.Address) (*definition.RewardDeposit, error) {
+func (s StakeApi) GetUncollectedReward(address types.Address) (*definition.RewardDeposit, error) {
 	var result definition.RewardDeposit
 	err := s.client.Call(&result, "embedded.stake.getUncollectedReward", address.String())
 	if err != nil {
@@ -39,7 +43,7 @@ func (s *StakeApi) GetUncollectedReward(address types.Address) (*definition.Rewa
 	return &result, nil
 }
 
-func (s *StakeApi) GetFrontierRewardByPage(address types.Address, pageIndex, pageSize uint32) (*embedded.RewardHistoryList, error) {
+func (s StakeApi) GetFrontierRewardByPage(address types.Address, pageIndex, pageSize uint32) (*embedded.RewardHistoryList, error) {
 	if pageSize > api.RpcMaxPageSize {
 		pageSize = api.RpcMaxPageSize
 	}
@@ -49,4 +53,57 @@ func (s *StakeApi) GetFrontierRewardByPage(address types.Address, pageIndex, pag
 		return nil, err
 	}
 	return &result, nil
+}
+
+// Contract methods
+func (s StakeApi) Stake(durationInSec int64, amount *big.Int) (*nom.AccountBlock, error) {
+	data, err := definition.ABIStake.PackMethod(
+		definition.StakeMethodName,
+		durationInSec,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		s.client.ProtocolVersion(),
+		s.client.ChainIdentifier(),
+		types.StakeContract,
+		types.ZnnTokenStandard,
+		amount,
+		data,
+	), nil
+}
+
+func (s StakeApi) Cancel(id types.Hash) (*nom.AccountBlock, error) {
+	data, err := definition.ABIStake.PackMethod(
+		definition.CancelStakeMethodName,
+		id,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		s.client.ProtocolVersion(),
+		s.client.ChainIdentifier(),
+		types.StakeContract,
+		types.ZnnTokenStandard,
+		big.NewInt(0),
+		data,
+	), nil
+}
+
+// Common contract methods
+func (s StakeApi) CollectReward() (*nom.AccountBlock, error) {
+	data, err := definition.ABIStake.PackMethod(definition.CollectRewardMethodName)
+	if err != nil {
+		return nil, err
+	}
+	return template.CallContract(
+		s.client.ProtocolVersion(),
+		s.client.ChainIdentifier(),
+		types.StakeContract,
+		types.ZnnTokenStandard,
+		big.NewInt(0),
+		data,
+	), nil
 }

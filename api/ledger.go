@@ -1,17 +1,18 @@
 package api
 
 import (
+	"github.com/zenon-network/go-zenon/chain/nom"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api"
 	"github.com/zenon-wiki/go-zdk/client"
 )
 
 type LedgerApi struct {
-	client client.IClient
+	client client.Client
 }
 
-func (l *LedgerApi) SetClient(client client.IClient) {
-	l.client = client
+func NewLedgerApi(client client.Client) LedgerApi {
+	return LedgerApi{client}
 }
 
 const (
@@ -19,7 +20,12 @@ const (
 	unreceivedMaxPageSize  = 50
 )
 
-func (l *LedgerApi) GetUnconfirmedBlocksByAddress(address types.Address, pageIndex, pageSize uint32) (*api.AccountBlockList, error) {
+func (l LedgerApi) PublishRawTransaction(block *nom.AccountBlock) error {
+	err := l.client.Call(nil, "ledger.publishRawTransaction", block)
+	return err
+}
+
+func (l LedgerApi) GetUnconfirmedBlocksByAddress(address types.Address, pageIndex, pageSize uint32) (*api.AccountBlockList, error) {
 	if pageSize > api.RpcMaxPageSize {
 		pageSize = api.RpcMaxPageSize
 	}
@@ -31,7 +37,7 @@ func (l *LedgerApi) GetUnconfirmedBlocksByAddress(address types.Address, pageInd
 	return &result, nil
 }
 
-func (l *LedgerApi) GetUnreceivedBlocksByAddress(address types.Address, pageIndex, pageSize uint32) (*api.AccountBlockList, error) {
+func (l LedgerApi) GetUnreceivedBlocksByAddress(address types.Address, pageIndex, pageSize uint32) (*api.AccountBlockList, error) {
 	if pageIndex > unreceivedMaxPageIndex {
 		pageIndex = unreceivedMaxPageIndex
 	}
@@ -47,7 +53,7 @@ func (l *LedgerApi) GetUnreceivedBlocksByAddress(address types.Address, pageInde
 }
 
 // Blocks
-func (l *LedgerApi) GetFrontierBlock(address types.Address) (*api.AccountBlock, error) {
+func (l LedgerApi) GetFrontierAccountBlock(address types.Address) (*api.AccountBlock, error) {
 	var result api.AccountBlock
 	err := l.client.Call(&result, "ledger.getFrontierAccountBlock", address.String())
 	if err != nil {
@@ -56,7 +62,7 @@ func (l *LedgerApi) GetFrontierBlock(address types.Address) (*api.AccountBlock, 
 	return &result, nil
 }
 
-func (l *LedgerApi) GetBlockByHash(hash types.Hash) (*api.AccountBlock, error) {
+func (l LedgerApi) GetAccountBlockByHash(hash types.Hash) (*api.AccountBlock, error) {
 	var result api.AccountBlock
 	err := l.client.Call(&result, "ledger.getAccountBlockByHash", hash.String())
 	if err != nil {
@@ -65,7 +71,7 @@ func (l *LedgerApi) GetBlockByHash(hash types.Hash) (*api.AccountBlock, error) {
 	return &result, nil
 }
 
-func (l *LedgerApi) GetBlocksByHeight(address types.Address, height, count uint64) (*api.AccountBlockList, error) {
+func (l LedgerApi) GetAccountBlocksByHeight(address types.Address, height, count uint64) (*api.AccountBlockList, error) {
 	if height == 0 {
 		height = 1
 	}
@@ -80,7 +86,8 @@ func (l *LedgerApi) GetBlocksByHeight(address types.Address, height, count uint6
 	return &result, nil
 }
 
-func (l *LedgerApi) GetBlocksByPage(address types.Address, pageIndex, pageSize uint32) (*api.AccountBlockList, error) {
+// pageIndex = 0 returns the most recent account blocks sorted descending by height
+func (l LedgerApi) GetAccountBlocksByPage(address types.Address, pageIndex, pageSize uint32) (*api.AccountBlockList, error) {
 	if pageSize > api.RpcMaxPageSize {
 		pageSize = api.RpcMaxPageSize
 	}
@@ -93,7 +100,7 @@ func (l *LedgerApi) GetBlocksByPage(address types.Address, pageIndex, pageSize u
 }
 
 // Momentums
-func (l *LedgerApi) GetFrontierMomentum() (*api.Momentum, error) {
+func (l LedgerApi) GetFrontierMomentum() (*api.Momentum, error) {
 	var result api.Momentum
 	err := l.client.Call(&result, "ledger.getFrontierMomentum")
 	if err != nil {
@@ -102,7 +109,7 @@ func (l *LedgerApi) GetFrontierMomentum() (*api.Momentum, error) {
 	return &result, nil
 }
 
-func (l *LedgerApi) GetMomentumBeforeTime(timestamp uint64) (*api.Momentum, error) {
+func (l LedgerApi) GetMomentumBeforeTime(timestamp uint64) (*api.Momentum, error) {
 	var result api.Momentum
 	err := l.client.Call(&result, "ledger.getMomentumBeforeTime", timestamp)
 	if err != nil {
@@ -111,7 +118,7 @@ func (l *LedgerApi) GetMomentumBeforeTime(timestamp uint64) (*api.Momentum, erro
 	return &result, nil
 }
 
-func (l *LedgerApi) GetMomentumByHash(hash types.Hash) (*api.Momentum, error) {
+func (l LedgerApi) GetMomentumByHash(hash types.Hash) (*api.Momentum, error) {
 	var result api.Momentum
 	err := l.client.Call(&result, "ledger.getMomentumByHash", hash.String())
 	if err != nil {
@@ -120,7 +127,7 @@ func (l *LedgerApi) GetMomentumByHash(hash types.Hash) (*api.Momentum, error) {
 	return &result, nil
 }
 
-func (l *LedgerApi) GetMomentumsByHeight(height, count uint64) (*api.MomentumList, error) {
+func (l LedgerApi) GetMomentumsByHeight(height, count uint64) (*api.MomentumList, error) {
 	if height == 0 {
 		height = 1
 	}
@@ -135,7 +142,8 @@ func (l *LedgerApi) GetMomentumsByHeight(height, count uint64) (*api.MomentumLis
 	return &result, nil
 }
 
-func (l *LedgerApi) GetMomentumsByPage(pageIndex, pageSize uint32) (*api.MomentumList, error) {
+// pageIndex = 0 returns the most recent momentums sorted descending by height
+func (l LedgerApi) GetMomentumsByPage(pageIndex, pageSize uint32) (*api.MomentumList, error) {
 	if pageSize > api.RpcMaxPageSize {
 		pageSize = api.RpcMaxPageSize
 	}
@@ -147,7 +155,7 @@ func (l *LedgerApi) GetMomentumsByPage(pageIndex, pageSize uint32) (*api.Momentu
 	return &result, nil
 }
 
-func (l *LedgerApi) GetDetailedMomentumsByHeight(height, count uint64) (*api.DetailedMomentumList, error) {
+func (l LedgerApi) GetDetailedMomentumsByHeight(height, count uint64) (*api.DetailedMomentumList, error) {
 	if height == 0 {
 		height = 1
 	}
@@ -163,7 +171,7 @@ func (l *LedgerApi) GetDetailedMomentumsByHeight(height, count uint64) (*api.Det
 }
 
 // Account info
-func (l *LedgerApi) GetAccountInfoByAddress(address types.Address) (*api.AccountInfo, error) {
+func (l LedgerApi) GetAccountInfoByAddress(address types.Address) (*api.AccountInfo, error) {
 	var result api.AccountInfo
 	err := l.client.Call(&result, "ledger.getAccountInfoByAddress", address.String())
 	if err != nil {
