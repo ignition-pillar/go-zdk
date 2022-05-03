@@ -4,6 +4,7 @@ import (
 	"math/big"
 
 	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
@@ -106,7 +107,7 @@ func (t *TokenApi) MintToken(zts types.ZenonTokenStandard, amount *big.Int, rece
 		t.client.ChainIdentifier(),
 		types.TokenContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -142,7 +143,7 @@ func (t *TokenApi) UpdateToken(zts types.ZenonTokenStandard, owner types.Address
 		t.client.ChainIdentifier(),
 		types.TokenContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }

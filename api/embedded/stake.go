@@ -4,6 +4,7 @@ import (
 	"math/big"
 
 	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
@@ -87,7 +88,7 @@ func (s StakeApi) Cancel(id types.Hash) (*nom.AccountBlock, error) {
 		s.client.ChainIdentifier(),
 		types.StakeContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -103,7 +104,7 @@ func (s StakeApi) CollectReward() (*nom.AccountBlock, error) {
 		s.client.ChainIdentifier(),
 		types.StakeContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }

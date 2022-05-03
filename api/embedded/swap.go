@@ -1,9 +1,8 @@
 package embedded
 
 import (
-	"math/big"
-
 	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
 	"github.com/zenon-network/go-zenon/vm/embedded/definition"
@@ -56,7 +55,7 @@ func (s SwapApi) RetrieveAssets(pubKey string, signature string) (*nom.AccountBl
 		s.client.ChainIdentifier(),
 		types.SwapContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }

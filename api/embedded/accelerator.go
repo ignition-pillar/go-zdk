@@ -4,6 +4,7 @@ import (
 	"math/big"
 
 	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
@@ -108,7 +109,7 @@ func (a AcceleratorApi) AddPhase(id types.Hash, name string, description string,
 		a.client.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -131,7 +132,7 @@ func (a AcceleratorApi) UpdatePhase(id types.Hash, name string, description stri
 		a.client.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -166,7 +167,7 @@ func (a AcceleratorApi) VoteByName(id types.Hash, pillarName string, vote uint8)
 		a.client.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -185,7 +186,7 @@ func (a AcceleratorApi) VoteByProdAddress(id types.Hash, vote uint8) (*nom.Accou
 		a.client.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }

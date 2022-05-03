@@ -4,6 +4,7 @@ import (
 	"math/big"
 
 	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
@@ -73,7 +74,7 @@ func (p PlasmaApi) Cancel(id types.Hash) (*nom.AccountBlock, error) {
 		p.client.ChainIdentifier(),
 		types.PlasmaContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }

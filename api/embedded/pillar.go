@@ -4,6 +4,7 @@ import (
 	"math/big"
 
 	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/rpc/api"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
@@ -192,7 +193,7 @@ func (p PillarApi) UpdatePillar(name string, producerAddress types.Address, rewa
 		p.client.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -210,7 +211,7 @@ func (p PillarApi) Revoke(name string) (*nom.AccountBlock, error) {
 		p.client.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -228,7 +229,7 @@ func (p PillarApi) Delegate(name string) (*nom.AccountBlock, error) {
 		p.client.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -243,7 +244,7 @@ func (p PillarApi) Undelegate() (*nom.AccountBlock, error) {
 		p.client.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -259,7 +260,7 @@ func (p PillarApi) CollectReward() (*nom.AccountBlock, error) {
 		p.client.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
@@ -289,7 +290,7 @@ func (p PillarApi) WithdrawQsr() (*nom.AccountBlock, error) {
 		p.client.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
-		big.NewInt(0),
+		common.Big0,
 		data,
 	), nil
 }
