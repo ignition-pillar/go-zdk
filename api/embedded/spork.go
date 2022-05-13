@@ -12,11 +12,11 @@ import (
 )
 
 type SporkApi struct {
-	client client.Client
+	c client.Client
 }
 
-func NewSporkApi(client client.Client) SporkApi {
-	return SporkApi{client}
+func NewSporkApi(c client.Client) SporkApi {
+	return SporkApi{c}
 }
 
 func (s SporkApi) GetAll(pageIndex, pageSize uint32) (*embedded.SporkList, error) {
@@ -24,7 +24,7 @@ func (s SporkApi) GetAll(pageIndex, pageSize uint32) (*embedded.SporkList, error
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.SporkList
-	err := s.client.Call(&result, "embedded.spork.getAll", pageIndex, pageSize)
+	err := s.c.Call(&result, "embedded.spork.getAll", pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -42,8 +42,8 @@ func (s SporkApi) Create(name string, description string) (*nom.AccountBlock, er
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.SporkContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -60,8 +60,8 @@ func (s SporkApi) Activate(id types.Hash) (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.SporkContract,
 		types.ZnnTokenStandard,
 		common.Big0,

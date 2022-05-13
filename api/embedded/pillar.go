@@ -15,17 +15,17 @@ import (
 )
 
 type PillarApi struct {
-	client client.Client
+	c client.Client
 }
 
-func NewPillarApi(client client.Client) PillarApi {
-	return PillarApi{client}
+func NewPillarApi(c client.Client) PillarApi {
+	return PillarApi{c}
 }
 
 // Common RPC
 func (p PillarApi) GetDepositedQsr(address types.Address) (*big.Int, error) {
 	var result big.Int
-	err := p.client.Call(&result, "embedded.pillar.getDepositedQsr", address.String())
+	err := p.c.Call(&result, "embedded.pillar.getDepositedQsr", address.String())
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (p PillarApi) GetDepositedQsr(address types.Address) (*big.Int, error) {
 
 func (p PillarApi) GetUncollectedReward(address types.Address) (*definition.RewardDeposit, error) {
 	var result definition.RewardDeposit
-	err := p.client.Call(&result, "embedded.pillar.getUncollectedReward", address.String())
+	err := p.c.Call(&result, "embedded.pillar.getUncollectedReward", address.String())
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (p PillarApi) GetFrontierRewardByPage(address types.Address, pageIndex, pag
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.RewardHistoryList
-	err := p.client.Call(&result, "embedded.pillar.getFrontierRewardByPage", address.String(), pageIndex, pageSize)
+	err := p.c.Call(&result, "embedded.pillar.getFrontierRewardByPage", address.String(), pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (p PillarApi) GetFrontierRewardByPage(address types.Address, pageIndex, pag
 // RPC
 func (p PillarApi) GetQsrRegistrationCost() (*big.Int, error) {
 	var result big.Int
-	err := p.client.Call(&result, "embedded.pillar.getQsrRegistrationCost")
+	err := p.c.Call(&result, "embedded.pillar.getQsrRegistrationCost")
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (p PillarApi) GetAll(pageIndex, pageSize uint32) (*embedded.PillarInfoList,
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.PillarInfoList
-	err := p.client.Call(&result, "embedded.pillar.getAll", pageIndex, pageSize)
+	err := p.c.Call(&result, "embedded.pillar.getAll", pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -77,13 +77,13 @@ func (p PillarApi) GetAll(pageIndex, pageSize uint32) (*embedded.PillarInfoList,
 
 func (p PillarApi) GetByOwner(address types.Address) ([]embedded.PillarInfo, error) {
 	var result []embedded.PillarInfo
-	err := p.client.Call(&result, "embedded.pillar.getByOwner", address.String())
+	err := p.c.Call(&result, "embedded.pillar.getByOwner", address.String())
 	return result, err
 }
 
 func (p PillarApi) GetByName(name string) (*embedded.PillarInfo, error) {
 	var result embedded.PillarInfo
-	err := p.client.Call(&result, "embedded.pillar.getByName", name)
+	err := p.c.Call(&result, "embedded.pillar.getByName", name)
 	if err != nil {
 		return nil, err
 	}
@@ -92,13 +92,13 @@ func (p PillarApi) GetByName(name string) (*embedded.PillarInfo, error) {
 
 func (p PillarApi) CheckNameAvailability(name string) (bool, error) {
 	var result bool
-	err := p.client.Call(&result, "embedded.pillar.checkNameAvailability", name)
+	err := p.c.Call(&result, "embedded.pillar.checkNameAvailability", name)
 	return result, err
 }
 
 func (p PillarApi) GetDelegatedPillar(address types.Address) (*embedded.GetDelegatedPillarResponse, error) {
 	var result embedded.GetDelegatedPillarResponse
-	err := p.client.Call(&result, "embedded.pillar.getDelegatedPillar", address.String())
+	err := p.c.Call(&result, "embedded.pillar.getDelegatedPillar", address.String())
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +110,7 @@ func (p PillarApi) GetPillarEpochHistory(name string, pageIndex, pageSize uint32
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.PillarEpochHistoryList
-	err := p.client.Call(&result, "embedded.pillar.getPillarEpochHistory", name, pageIndex, pageSize)
+	err := p.c.Call(&result, "embedded.pillar.getPillarEpochHistory", name, pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func (p PillarApi) GetPillarsHistoryByEpoch(epoch uint64, pageIndex, pageSize ui
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.PillarEpochHistoryList
-	err := p.client.Call(&result, "embedded.pillar.getPillarsHistoryByEpoch", epoch, pageIndex, pageSize)
+	err := p.c.Call(&result, "embedded.pillar.getPillarsHistoryByEpoch", epoch, pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -143,8 +143,8 @@ func (p PillarApi) Register(name string, producerAddress types.Address, rewardAd
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
 		constants.PillarStakeAmount,
@@ -167,8 +167,8 @@ func (p PillarApi) RegisterLegacy(name string, producerAddress types.Address, re
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
 		constants.PillarStakeAmount,
@@ -189,8 +189,8 @@ func (p PillarApi) UpdatePillar(name string, producerAddress types.Address, rewa
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -207,8 +207,8 @@ func (p PillarApi) Revoke(name string) (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -225,8 +225,8 @@ func (p PillarApi) Delegate(name string) (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -240,8 +240,8 @@ func (p PillarApi) Undelegate() (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -256,8 +256,8 @@ func (p PillarApi) CollectReward() (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -271,8 +271,8 @@ func (p PillarApi) DepositQsr(amount *big.Int) (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.QsrTokenStandard,
 		amount,
@@ -286,8 +286,8 @@ func (p PillarApi) WithdrawQsr() (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PillarContract,
 		types.ZnnTokenStandard,
 		common.Big0,

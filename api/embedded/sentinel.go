@@ -15,11 +15,11 @@ import (
 )
 
 type SentinelApi struct {
-	client client.Client
+	c client.Client
 }
 
-func NewSentinelApi(client client.Client) SentinelApi {
-	return SentinelApi{client}
+func NewSentinelApi(c client.Client) SentinelApi {
+	return SentinelApi{c}
 }
 
 // RPC
@@ -28,7 +28,7 @@ func (s SentinelApi) GetAllActive(pageIndex, pageSize uint32) (*embedded.Sentine
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.SentinelInfoList
-	err := s.client.Call(&result, "embedded.sentinel.getAllActive", pageIndex, pageSize)
+	err := s.c.Call(&result, "embedded.sentinel.getAllActive", pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (s SentinelApi) GetAllActive(pageIndex, pageSize uint32) (*embedded.Sentine
 
 func (s SentinelApi) GetByOwner(address types.Address) (*embedded.SentinelInfo, error) {
 	var result embedded.SentinelInfo
-	err := s.client.Call(&result, "embedded.sentinel.getByOwner", address.String())
+	err := s.c.Call(&result, "embedded.sentinel.getByOwner", address.String())
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (s SentinelApi) GetByOwner(address types.Address) (*embedded.SentinelInfo, 
 // Common RPC
 func (s SentinelApi) GetDepositedQsr(address types.Address) (*big.Int, error) {
 	var result big.Int
-	err := s.client.Call(&result, "embedded.sentinel.getDepositedQsr", address.String())
+	err := s.c.Call(&result, "embedded.sentinel.getDepositedQsr", address.String())
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (s SentinelApi) GetDepositedQsr(address types.Address) (*big.Int, error) {
 
 func (s SentinelApi) GetUncollectedReward(address types.Address) (*definition.RewardDeposit, error) {
 	var result definition.RewardDeposit
-	err := s.client.Call(&result, "embedded.sentinel.getUncollectedReward", address.String())
+	err := s.c.Call(&result, "embedded.sentinel.getUncollectedReward", address.String())
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (s SentinelApi) GetFrontierRewardByPage(address types.Address, pageIndex, p
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.RewardHistoryList
-	err := s.client.Call(&result, "embedded.sentinel.getFrontierRewardByPage", address.String(), pageIndex, pageSize)
+	err := s.c.Call(&result, "embedded.sentinel.getFrontierRewardByPage", address.String(), pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -82,8 +82,8 @@ func (s SentinelApi) Register() (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.SentinelContract,
 		types.ZnnTokenStandard,
 		constants.SentinelZnnRegisterAmount,
@@ -97,8 +97,8 @@ func (s SentinelApi) Revoke() (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.SentinelContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -113,8 +113,8 @@ func (s SentinelApi) CollectReward() (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.SentinelContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -128,8 +128,8 @@ func (s SentinelApi) DepositQsr(amount *big.Int) (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.SentinelContract,
 		types.QsrTokenStandard,
 		amount,
@@ -143,8 +143,8 @@ func (s SentinelApi) WithdrawQsr() (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.SentinelContract,
 		types.ZnnTokenStandard,
 		common.Big0,

@@ -9,16 +9,16 @@ import (
 )
 
 type SubscribeApi struct {
-	client client.Client
+	c client.Client
 }
 
-func NewSubscribeApi(client client.Client) SubscribeApi {
-	return SubscribeApi{client}
+func NewSubscribeApi(c client.Client) SubscribeApi {
+	return SubscribeApi{c}
 }
 
 func (s SubscribeApi) ToMomentums(ch chan []subscribe.Momentum) (client.Subscription, error) {
 	ctx := context.Background()
-	sub, err := s.client.Subscribe(ctx, "ledger", ch, "momentums")
+	sub, err := s.c.Subscribe(ctx, "ledger", ch, "momentums")
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (s SubscribeApi) ToMomentums(ch chan []subscribe.Momentum) (client.Subscrip
 
 func (s SubscribeApi) ToAllAccountBlocks(ch chan []subscribe.AccountBlock) (client.Subscription, error) {
 	ctx := context.Background()
-	sub, err := s.client.Subscribe(ctx, "ledger", ch, "allAccountBlocks")
+	sub, err := s.c.Subscribe(ctx, "ledger", ch, "allAccountBlocks")
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (s SubscribeApi) ToAllAccountBlocks(ch chan []subscribe.AccountBlock) (clie
 
 func (s SubscribeApi) ToAccountBlocksByAddress(ch chan []subscribe.AccountBlock, address types.Address) (client.Subscription, error) {
 	ctx := context.Background()
-	sub, err := s.client.Subscribe(ctx, "ledger", ch, "accountBlocksByAddress", address.String())
+	sub, err := s.c.Subscribe(ctx, "ledger", ch, "accountBlocksByAddress", address.String())
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s SubscribeApi) ToAccountBlocksByAddress(ch chan []subscribe.AccountBlock,
 
 func (s SubscribeApi) ToUnreceivedAccountBlocksByAddress(ch chan []subscribe.AccountBlock, address types.Address) (client.Subscription, error) {
 	ctx := context.Background()
-	sub, err := s.client.Subscribe(ctx, "ledger", ch, "unreceivedAccountBlocksByAddress", address.String())
+	sub, err := s.c.Subscribe(ctx, "ledger", ch, "unreceivedAccountBlocksByAddress", address.String())
 	if err != nil {
 		return nil, err
 	}

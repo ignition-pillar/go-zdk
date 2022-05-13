@@ -14,11 +14,11 @@ import (
 )
 
 type StakeApi struct {
-	client client.Client
+	c client.Client
 }
 
-func NewStakeApi(client client.Client) StakeApi {
-	return StakeApi{client}
+func NewStakeApi(c client.Client) StakeApi {
+	return StakeApi{c}
 }
 
 // RPC
@@ -27,7 +27,7 @@ func (s StakeApi) GetEntriesByAddress(address types.Address, pageIndex, pageSize
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.StakeList
-	err := s.client.Call(&result, "embedded.stake.getEntriesByAddress", address.String(), pageIndex, pageSize)
+	err := s.c.Call(&result, "embedded.stake.getEntriesByAddress", address.String(), pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (s StakeApi) GetEntriesByAddress(address types.Address, pageIndex, pageSize
 // Common RPC
 func (s StakeApi) GetUncollectedReward(address types.Address) (*definition.RewardDeposit, error) {
 	var result definition.RewardDeposit
-	err := s.client.Call(&result, "embedded.stake.getUncollectedReward", address.String())
+	err := s.c.Call(&result, "embedded.stake.getUncollectedReward", address.String())
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (s StakeApi) GetFrontierRewardByPage(address types.Address, pageIndex, page
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.RewardHistoryList
-	err := s.client.Call(&result, "embedded.stake.getFrontierRewardByPage", address.String(), pageIndex, pageSize)
+	err := s.c.Call(&result, "embedded.stake.getFrontierRewardByPage", address.String(), pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -66,8 +66,8 @@ func (s StakeApi) Stake(durationInSec int64, amount *big.Int) (*nom.AccountBlock
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.StakeContract,
 		types.ZnnTokenStandard,
 		amount,
@@ -84,8 +84,8 @@ func (s StakeApi) Cancel(id types.Hash) (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.StakeContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -100,8 +100,8 @@ func (s StakeApi) CollectReward() (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.StakeContract,
 		types.ZnnTokenStandard,
 		common.Big0,

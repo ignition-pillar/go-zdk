@@ -16,15 +16,15 @@ type EmbeddedApi struct {
 	Token       embedded.TokenApi
 }
 
-func NewEmbeddedApi(client client.Client) EmbeddedApi {
+func NewEmbeddedApi(c client.Client) EmbeddedApi {
 	return EmbeddedApi{
-		Accelerator: embedded.NewAcceleratorApi(client),
-		Pillar:      embedded.NewPillarApi(client),
-		Plasma:      embedded.NewPlasmaApi(client),
-		Sentinel:    embedded.NewSentinelApi(client),
-		Spork:       embedded.NewSporkApi(client),
-		Stake:       embedded.NewStakeApi(client),
-		Swap:        embedded.NewSwapApi(client),
-		Token:       embedded.NewTokenApi(client),
+		Accelerator: embedded.NewAcceleratorApi(c),
+		Pillar:      embedded.NewPillarApi(c),
+		Plasma:      embedded.NewPlasmaApi(c),
+		Sentinel:    embedded.NewSentinelApi(c),
+		Spork:       embedded.NewSporkApi(c),
+		Stake:       embedded.NewStakeApi(c),
+		Swap:        embedded.NewSwapApi(c),
+		Token:       embedded.NewTokenApi(c),
 	}
 }

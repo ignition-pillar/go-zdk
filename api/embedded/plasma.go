@@ -14,16 +14,16 @@ import (
 )
 
 type PlasmaApi struct {
-	client client.Client
+	c client.Client
 }
 
-func NewPlasmaApi(client client.Client) PlasmaApi {
-	return PlasmaApi{client}
+func NewPlasmaApi(c client.Client) PlasmaApi {
+	return PlasmaApi{c}
 }
 
 func (p PlasmaApi) Get(address types.Address) (*embedded.PlasmaInfo, error) {
 	var result embedded.PlasmaInfo
-	err := p.client.Call(&result, "embedded.plasma.get", address.String())
+	err := p.c.Call(&result, "embedded.plasma.get", address.String())
 	return &result, err
 }
 
@@ -32,13 +32,13 @@ func (p PlasmaApi) GetEntriesByAddress(address types.Address, pageIndex, pageSiz
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.FusionEntryList
-	err := p.client.Call(&result, "embedded.plasma.getEntriesByAddress", address.String(), pageIndex, pageSize)
+	err := p.c.Call(&result, "embedded.plasma.getEntriesByAddress", address.String(), pageIndex, pageSize)
 	return &result, err
 }
 
 func (p PlasmaApi) GetRequiredPoWForAccountBlock(param *embedded.GetRequiredParam) (*embedded.GetRequiredResult, error) {
 	var result embedded.GetRequiredResult
-	err := p.client.Call(&result, "embedded.plasma.getRequiredPoWForAccountBlock", param)
+	err := p.c.Call(&result, "embedded.plasma.getRequiredPoWForAccountBlock", param)
 	return &result, err
 }
 
@@ -52,8 +52,8 @@ func (p PlasmaApi) Fuse(beneficiary types.Address, amount *big.Int) (*nom.Accoun
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PlasmaContract,
 		types.QsrTokenStandard,
 		amount,
@@ -70,8 +70,8 @@ func (p PlasmaApi) Cancel(id types.Hash) (*nom.AccountBlock, error) {
 		return nil, err
 	}
 	return template.CallContract(
-		p.client.ProtocolVersion(),
-		p.client.ChainIdentifier(),
+		p.c.ProtocolVersion(),
+		p.c.ChainIdentifier(),
 		types.PlasmaContract,
 		types.ZnnTokenStandard,
 		common.Big0,

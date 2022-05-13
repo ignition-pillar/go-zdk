@@ -11,17 +11,17 @@ import (
 )
 
 type SwapApi struct {
-	client client.Client
+	c client.Client
 }
 
-func NewSwapApi(client client.Client) SwapApi {
-	return SwapApi{client}
+func NewSwapApi(c client.Client) SwapApi {
+	return SwapApi{c}
 }
 
 // RPC
 func (s SwapApi) GetAssetsByKeyIdHash(keyIdHash types.Hash) (*embedded.SwapAssetEntry, error) {
 	var result embedded.SwapAssetEntry
-	err := s.client.Call(&result, "embedded.swap.getAssetsByKeyIdHash", keyIdHash.String())
+	err := s.c.Call(&result, "embedded.swap.getAssetsByKeyIdHash", keyIdHash.String())
 	if err != nil {
 		return nil, err
 	}
@@ -30,13 +30,13 @@ func (s SwapApi) GetAssetsByKeyIdHash(keyIdHash types.Hash) (*embedded.SwapAsset
 
 func (s SwapApi) GetAssets() (map[types.Hash]embedded.SwapAssetEntrySimple, error) {
 	var result map[types.Hash]embedded.SwapAssetEntrySimple
-	err := s.client.Call(&result, "embedded.swap.getAssets")
+	err := s.c.Call(&result, "embedded.swap.getAssets")
 	return result, err
 }
 
 func (s SwapApi) GetLegacyPillars() ([]embedded.SwapLegacyPillarEntry, error) {
 	var result []embedded.SwapLegacyPillarEntry
-	err := s.client.Call(&result, "embedded.swap.getLegacyPillars")
+	err := s.c.Call(&result, "embedded.swap.getLegacyPillars")
 	return result, err
 }
 
@@ -51,8 +51,8 @@ func (s SwapApi) RetrieveAssets(pubKey string, signature string) (*nom.AccountBl
 		return nil, err
 	}
 	return template.CallContract(
-		s.client.ProtocolVersion(),
-		s.client.ChainIdentifier(),
+		s.c.ProtocolVersion(),
+		s.c.ChainIdentifier(),
 		types.SwapContract,
 		types.ZnnTokenStandard,
 		common.Big0,

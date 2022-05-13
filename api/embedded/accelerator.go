@@ -15,11 +15,11 @@ import (
 )
 
 type AcceleratorApi struct {
-	client client.Client
+	c client.Client
 }
 
-func NewAcceleratorApi(client client.Client) AcceleratorApi {
-	return AcceleratorApi{client}
+func NewAcceleratorApi(c client.Client) AcceleratorApi {
+	return AcceleratorApi{c}
 }
 
 // RPC
@@ -28,7 +28,7 @@ func (a AcceleratorApi) GetAll(pageIndex, pageSize uint32) (*embedded.ProjectLis
 		pageSize = api.RpcMaxPageSize
 	}
 	var result embedded.ProjectList
-	err := a.client.Call(&result, "embedded.accelerator.getAll", pageIndex, pageSize)
+	err := a.c.Call(&result, "embedded.accelerator.getAll", pageIndex, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (a AcceleratorApi) GetAll(pageIndex, pageSize uint32) (*embedded.ProjectLis
 
 func (a AcceleratorApi) GetProjectById(id types.Hash) (*embedded.Project, error) {
 	var result embedded.Project
-	err := a.client.Call(&result, "embedded.accelerator.getProjectById", id.String())
+	err := a.c.Call(&result, "embedded.accelerator.getProjectById", id.String())
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (a AcceleratorApi) GetProjectById(id types.Hash) (*embedded.Project, error)
 
 func (a AcceleratorApi) GetPhaseById(id types.Hash) (*embedded.Phase, error) {
 	var result embedded.Phase
-	err := a.client.Call(&result, "embedded.accelerator.getPhaseById", id.String())
+	err := a.c.Call(&result, "embedded.accelerator.getPhaseById", id.String())
 	if err != nil {
 		return nil, err
 	}
@@ -55,13 +55,13 @@ func (a AcceleratorApi) GetPhaseById(id types.Hash) (*embedded.Phase, error) {
 
 func (a AcceleratorApi) GetPillarVotes(name string, hashes []types.Hash) ([]definition.PillarVote, error) {
 	var result []definition.PillarVote
-	err := a.client.Call(&result, "embedded.accelerator.getPillarVotes", name, hashes)
+	err := a.c.Call(&result, "embedded.accelerator.getPillarVotes", name, hashes)
 	return result, err
 }
 
 func (a AcceleratorApi) GetVoteBreakdown(id types.Hash) (*definition.VoteBreakdown, error) {
 	var result definition.VoteBreakdown
-	err := a.client.Call(&result, "embedded.accelerator.getVoteBreakdown", id.String())
+	err := a.c.Call(&result, "embedded.accelerator.getVoteBreakdown", id.String())
 	if err != nil {
 		return nil, err
 	}
@@ -82,8 +82,8 @@ func (a AcceleratorApi) CreateProject(name string, description string, url strin
 		return nil, err
 	}
 	return template.CallContract(
-		a.client.ProtocolVersion(),
-		a.client.ChainIdentifier(),
+		a.c.ProtocolVersion(),
+		a.c.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
 		constants.ProjectCreationAmount,
@@ -105,8 +105,8 @@ func (a AcceleratorApi) AddPhase(id types.Hash, name string, description string,
 		return nil, err
 	}
 	return template.CallContract(
-		a.client.ProtocolVersion(),
-		a.client.ChainIdentifier(),
+		a.c.ProtocolVersion(),
+		a.c.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -128,8 +128,8 @@ func (a AcceleratorApi) UpdatePhase(id types.Hash, name string, description stri
 		return nil, err
 	}
 	return template.CallContract(
-		a.client.ProtocolVersion(),
-		a.client.ChainIdentifier(),
+		a.c.ProtocolVersion(),
+		a.c.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -143,8 +143,8 @@ func (a AcceleratorApi) Donate(amount *big.Int, zts types.ZenonTokenStandard) (*
 		return nil, err
 	}
 	return template.CallContract(
-		a.client.ProtocolVersion(),
-		a.client.ChainIdentifier(),
+		a.c.ProtocolVersion(),
+		a.c.ChainIdentifier(),
 		types.AcceleratorContract,
 		zts,
 		amount,
@@ -163,8 +163,8 @@ func (a AcceleratorApi) VoteByName(id types.Hash, pillarName string, vote uint8)
 		return nil, err
 	}
 	return template.CallContract(
-		a.client.ProtocolVersion(),
-		a.client.ChainIdentifier(),
+		a.c.ProtocolVersion(),
+		a.c.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
 		common.Big0,
@@ -182,8 +182,8 @@ func (a AcceleratorApi) VoteByProdAddress(id types.Hash, vote uint8) (*nom.Accou
 		return nil, err
 	}
 	return template.CallContract(
-		a.client.ProtocolVersion(),
-		a.client.ChainIdentifier(),
+		a.c.ProtocolVersion(),
+		a.c.ChainIdentifier(),
 		types.AcceleratorContract,
 		types.ZnnTokenStandard,
 		common.Big0,
