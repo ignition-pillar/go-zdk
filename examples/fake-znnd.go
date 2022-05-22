@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/zenon-network/go-zenon/rpc/api/subscribe"
@@ -12,12 +13,18 @@ import (
 
 func main() {
 
-	url := "ws://127.0.0.1:35998"
-	rpc, err := client.Dial(url)
+	fmt.Println("Enter your node address: [ws://127.0.0.1:35998]")
+	var url string
+	fmt.Scanln(&url)
+	url = strings.Trim(url, " ")
+	if url == "" {
+		url = "ws://127.0.0.1:35998"
+	}
+	rpc, err := client.NewClient(url)
 	if err != nil {
 		log.Fatal(err)
 	}
-	z := zdk.Zdk().SetClient(rpc)
+	z := zdk.NewZdk(rpc)
 
 	ms := make(chan []subscribe.Momentum)
 

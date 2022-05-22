@@ -21,12 +21,12 @@ func main() {
 		url = "ws://127.0.0.1:35998"
 	}
 
-	rpc, err := client.Dial(url)
+	rpc, err := client.NewClient(url)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to", url)
-	z := zdk.Zdk().SetClient(rpc)
+	z := zdk.NewZdk(rpc)
 
 	fmt.Println("Enter an address:")
 	var addr string
@@ -42,7 +42,7 @@ func main() {
 	var height uint64 = 1
 	more := true
 	for more {
-		blocks, err := z.Ledger.GetBlocksByHeight(address, height, 50)
+		blocks, err := z.Ledger.GetAccountBlocksByHeight(address, height, 50)
 		if err != nil {
 			log.Fatal(err)
 		}
