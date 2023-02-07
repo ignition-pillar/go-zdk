@@ -3,6 +3,8 @@ package embedded
 import (
 	"math/big"
 
+	"github.com/ignition-pillar/go-zdk/client"
+	"github.com/ignition-pillar/go-zdk/utils/template"
 	"github.com/zenon-network/go-zenon/chain/nom"
 	"github.com/zenon-network/go-zenon/common"
 	"github.com/zenon-network/go-zenon/common/types"
@@ -10,8 +12,6 @@ import (
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
 	"github.com/zenon-network/go-zenon/vm/constants"
 	"github.com/zenon-network/go-zenon/vm/embedded/definition"
-	"github.com/zenon-wiki/go-zdk/client"
-	"github.com/zenon-wiki/go-zdk/utils/template"
 )
 
 type PillarApi struct {

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/zenon-wiki/go-zdk/api/embedded"
-	"github.com/zenon-wiki/go-zdk/client"
+	"github.com/ignition-pillar/go-zdk/api/embedded"
+	"github.com/ignition-pillar/go-zdk/client"
 )
 
 type EmbeddedApi struct {

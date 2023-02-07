@@ -4,12 +4,12 @@ import (
 	"encoding/hex"
 	"errors"
 
+	"github.com/ignition-pillar/go-zdk/wallet"
+	"github.com/ignition-pillar/go-zdk/zdk"
 	"github.com/zenon-network/go-zenon/chain/nom"
 	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/pow"
 	"github.com/zenon-network/go-zenon/rpc/api/embedded"
-	"github.com/zenon-wiki/go-zdk/wallet"
-	"github.com/zenon-wiki/go-zdk/zdk"
 )
 
 func autofillTransactionParameters(z *zdk.Zdk, tx *nom.AccountBlock) error {

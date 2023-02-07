@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ignition-pillar/go-zdk/client"
+	"github.com/ignition-pillar/go-zdk/zdk"
 	"github.com/zenon-network/go-zenon/rpc/api/subscribe"
-	"github.com/zenon-wiki/go-zdk/client"
-	"github.com/zenon-wiki/go-zdk/zdk"
 )
 
 func main() {

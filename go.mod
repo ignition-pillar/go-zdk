@@ -1,4 +1,4 @@
-module github.com/zenon-wiki/go-zdk
+module github.com/ignition-pillar/go-zdk
 
 go 1.17
 
