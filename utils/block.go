@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/hex"
 	"errors"
+	"math/big"
 
 	"github.com/ignition-pillar/go-zdk/wallet"
 	"github.com/ignition-pillar/go-zdk/zdk"
@@ -91,11 +92,13 @@ func setDifficulty(z *zdk.Zdk, tx *nom.AccountBlock, waitForRequiredPlasma bool)
 		return err
 	}
 
-	if resp.RequiredDifficulty.Sign() != 0 {
+	if resp.RequiredDifficulty != 0 {
 		tx.FusedPlasma = resp.AvailablePlasma
-		tx.Difficulty = resp.RequiredDifficulty.Uint64()
+		tx.Difficulty = resp.RequiredDifficulty
 		dataHash := pow.GetAccountBlockHash(tx)
-		tx.Nonce = nom.DeSerializeNonce(pow.GetPoWNonce(resp.RequiredDifficulty, dataHash))
+		var d big.Int
+		d.SetUint64(resp.RequiredDifficulty)
+		tx.Nonce = nom.DeSerializeNonce(pow.GetPoWNonce(&d, dataHash))
 	} else {
 		tx.FusedPlasma = resp.BasePlasma
 		tx.Difficulty = 0
@@ -142,7 +145,7 @@ func RequiresPow(z *zdk.Zdk, tx *nom.AccountBlock, signer wallet.Signer) (*bool,
 	if err != nil {
 		return nil, err
 	}
-	if resp.RequiredDifficulty.Sign() == 0 {
+	if resp.RequiredDifficulty == 0 {
 		ans = false
 	}
 	return &ans, nil
